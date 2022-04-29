@@ -21,6 +21,9 @@ settings:
       min: 6
       max: 12
       increment: 2
+    - name: autoscaling
+      type: checkbox
+      caption: Enable Horizontal Auto-Scaling
 
 nodes:
   - cloudlets: 10
@@ -29,6 +32,7 @@ nodes:
     skipNodeEmails: true
 
 onInstall:
+  - if (${settings.autoscaling}): autoscaling
   - clusterInit
     
 onAfterServiceScaleOut[nosqldb]:
