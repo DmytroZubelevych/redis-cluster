@@ -1,0 +1,161 @@
+type: install	
+jpsVersion: 1.8.1
+name: Redis cluster	
+id: redis-cluster
+targetEditions: any
+logo: https://github.com/jelastic/icons/raw/master/redis/jelastic/icons/logo_32x32.png
+description: |
+  Redis active-active cluster
+baseUrl: https://raw.githubusercontent.com/DmytroZubelevych/redis-cluster/main
+
+permanent: true
+
+globals:
+  redisPswd: ${fn.password}
+
+settings:
+  fields:
+    - type: spinner
+      name: nodesCount
+      caption: Nodes count
+      min: 6
+      max: 12
+      increment: 2
+
+nodes:
+  - cloudlets: 6
+    count: ${settings.nodesCount}
+    nodeType: redis
+    skipNodeEmails: true
+
+onInstall:
+  - clusterInit
+    
+onAfterServiceScaleOut[nosqldb]:
+  - getRedisPasswd
+  - addNewNodeToCluster
+  
+onBeforeRedeployContainer[nosqldb]:  
+  - getRedisPasswd
+  - if (event.response.nodes.length} != ${nodes.nosqldb.length}):
+    - forEach(event.response.nodes):
+      - reshardBeforeScaleIn:
+          address: ${@i.address}
+  
+onAfterRedeployContainer[nosqldb]:
+  - if (event.response.nodes.length} == ${nodes.nosqldb.length}):
+    - clusterInit
+  - else:
+    - forEach(event.response.nodes):
+      - addNewNodeToCluster
+
+onBeforeScaleIn[nosqldb]:
+  - getRedisPasswd
+  - forEach(event.response.nodes):
+    - reshardBeforeScaleIn:
+        address: ${@i.address}
+  - forEach(event.response.nodes):
+      - cmd[${@i.id}]: |-
+          export REDISCLI_AUTH=${globals.redisPswd}
+          yes yes| redis-cli --cluster del-node ${nodes.nosqldb.master.address}:6379 $(redis-cli cluster nodes|grep '${@i.address}:6379'|awk '{print $1}')
+        user: root
+        sayYes: no
+  - rebalanceCluster
+  
+onBeforeMigrate:
+  - saveCurrentIpAddress
+
+onBeforeClone:
+  - saveCurrentIpAddress
+
+onAfterMigrate:
+  - updateIpAddresses
+  
+onAfterClone:
+  - updateIpAddresses
+
+actions:
+  clusterInit:
+    - prepareClusterNode: ${nodes.nosqldb.join(id,)}
+    - cmd[${nodes.nosqldb.master.id}]: |-
+        export REDISCLI_AUTH=${globals.redisPswd}
+        yes yes| redis-cli --cluster create $(echo ${nodes.nosqldb.join(address,)} | sed 's/,/:6379 /g'):6379 --cluster-replicas 1
+      user: root
+      sayYes: no
+    - rebalanceCluster
+
+  getRedisPasswd:
+    - cmd[${nodes.nosqldb.master.id}]: cat /etc/redis.conf |grep ^requirepass|awk '{print $2}'
+    - setGlobals:
+        redisPswd: ${response.out}
+        
+  prepareClusterNode:
+    - cmd[${this}]:
+        jem passwd set -p ${globals.redisPswd};
+        echo -e "cluster-enabled yes\ncluster-config-file nodes.conf\ncluster-node-timeout 5000\nappendonly yes" >> /etc/redis.conf;
+        jem service restart;
+      user: root
+      
+  reshardAfterScaleOut:
+    - cmd[${this.id}]:
+        export REDISCLI_AUTH=${globals.redisPswd};
+        export NEW_NODE_ID=$(redis-cli cluster nodes|grep ${this.address}|grep master|awk '{print $1}');
+        export n=$(redis-cli cluster nodes|grep master|wc -l);
+        export SHARDS_NUM=$(( 16384 / ${n} ));
+        if [ ! -z "${NEW_NODE_ID}" ]; then redis-cli --cluster reshard ${this.address}:6379 --cluster-from all --cluster-to ${NEW_NODE_ID} --cluster-slots ${SHARDS_NUM} --cluster-yes; else true; fi;
+      user: root
+      sayYes: no
+      
+  reshardBeforeScaleIn:
+    - cmd[${nodes.nosqldb.master.id}]:
+        export REDISCLI_AUTH=${globals.redisPswd};
+        export SHARDS_NUM=$(redis-cli --cluster check ${this.address}:6379|grep '^${this.address}:6379'|awk '{print $7}');
+        export OLD_NODE_ID=$(redis-cli cluster nodes|grep ${this.address}:6379|grep master|awk '{print $1}');
+        export MASTER_NODE_ID=$(redis-cli cluster nodes|grep master|awk '{print $1}'|grep -v $OLD_NODE_ID|head -n 1);
+        if [ ! -z "${SHARDS_NUM}" ]; then redis-cli --cluster reshard ${nodes.nosqldb.master.address}:6379 --cluster-from ${OLD_NODE_ID} --cluster-to ${MASTER_NODE_ID} --cluster-slots ${SHARDS_NUM} --cluster-yes; else true; fi;
+      user: root
+      sayYes: no
+      
+  addNewNodeToCluster:
+    - prepareClusterNode: ${event.response.nodes.join(id,)}
+    - forEach(event.response.nodes):
+        - cmd[${nodes.nosqldb.master.id}]: |-
+            export REDISCLI_AUTH=${globals.redisPswd};
+            export n=$(redis-cli cluster nodes|wc -l);
+            if [ $(expr $n % 2) == 0 ]; then export CL_SLAVE=""; else export CL_SLAVE="--cluster-slave"; fi;
+            yes yes| redis-cli --cluster add-node ${@i.address}:6379 ${nodes.nosqldb.master.address}:6379 ${CL_SLAVE};
+          user: root
+          sayYes: no
+    - forEach(event.response.nodes):
+        - reshardAfterScaleOut: 
+            id: ${@i.id}
+            address: ${@i.address}
+    - rebalanceCluster
+
+  saveCurrentIpAddress:
+    - cmd[nosqldb]:
+        ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | tail -n 1 > /root/.previous_ip
+      user: root
+
+  updateIpAddresses:
+    - forEach(nodes.nosqldb):
+        - cmd[${@i.id}]: cat /root/.previous_ip
+          user: root
+        - cmd[nosqldb]: sed -i 's/${response.out}/${@i.address}/'  /var/lib/redis/nodes.conf 
+          user: root
+    - cmd[nosqldb]: jem service restart
+    - cmd[nosqldb]: rm -f /root/.previous_ip
+      user: root
+    
+  rebalanceCluster:
+    - cmd[${nodes.nosqldb.master.id}]:
+        export REDISCLI_AUTH=${globals.redisPswd};
+        redis-cli --cluster rebalance ${nodes.nosqldb.master.address}:6379;
+      user: root
+    
+success: |
+  Below you will find your admin panel link, username and password.
+  
+  Admin panel URL: [https://${nodes.nosqldb.master.id}-${env.domain}](https://${nodes.nosqldb.master.id}-${env.domain})  
+  Admin name: admin  
+  Password: ${globals.redisPswd}
