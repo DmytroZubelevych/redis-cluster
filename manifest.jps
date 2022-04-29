@@ -75,6 +75,13 @@ onAfterClone:
   - updateIpAddresses
 
 actions:
+  autoscaling:
+    script: https://raw.githubusercontent.com/DmytroZubelevych/redis-cluster/main/autoscaling-triggers.js
+    params:
+      nodeGroup: nosqldb
+      upLimit: '12'
+      downLimit: "${settings.nodes}"
+
   clusterInit:
     - prepareClusterNode: ${nodes.nosqldb.join(id,)}
     - cmd[${nodes.nosqldb.master.id}]: |-
