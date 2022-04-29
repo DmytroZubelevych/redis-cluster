@@ -80,7 +80,7 @@ actions:
     params:
       nodeGroup: nosqldb
       upLimit: '12'
-      downLimit: "${settings.nodes}"
+      downLimit: "${settings.nodesCount}"
 
   clusterInit:
     - prepareClusterNode: ${nodes.nosqldb.join(id,)}
