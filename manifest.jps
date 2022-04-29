@@ -23,7 +23,7 @@ settings:
       increment: 2
 
 nodes:
-  - cloudlets: 6
+  - cloudlets: 10
     count: ${settings.nodesCount}
     nodeType: redis
     skipNodeEmails: true
