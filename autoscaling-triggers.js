@@ -56,7 +56,7 @@ for (var i = 0; i < types.length; i++) {
             type: "ADD_NODE",
             customData: {
                 limit: t.scaleUpLimit,
-                count: 1,
+                count: 2,
                 notify: true
             }
         }]
@@ -79,7 +79,7 @@ for (var i = 0; i < types.length; i++) {
             type: "REMOVE_NODE",
             customData: {
                 limit: t.scaleDownLimit,
-                count: 1,
+                count: 2,
                 notify: true
             }
         }]
