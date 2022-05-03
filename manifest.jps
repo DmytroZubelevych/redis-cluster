@@ -30,6 +30,7 @@ nodes:
     count: ${settings.nodesCount}
     nodeType: redis
     skipNodeEmails: true
+    diskLimit: 50
 
 onInstall:
   - if (${settings.autoscaling}): autoscaling
@@ -102,6 +103,7 @@ actions:
         
   prepareClusterNode:
     - cmd[${this}]:
+        sed -i 's/^loglevel notice/loglevel warning/' /etc/redis.conf;
         jem passwd set -p ${globals.redisPswd};
         echo -e "cluster-enabled yes\ncluster-config-file nodes.conf\ncluster-node-timeout 5000\nappendonly yes" >> /etc/redis.conf;
         jem service restart;
@@ -167,6 +169,6 @@ actions:
 success: |
   Below you will find your admin panel link, username and password.
   
-  Admin panel URL: [http://${nodes.nosqldb.master.id}-${env.domain}](http://${nodes.nosqldb.master.id}-${env.domain})  
+  Admin panel URL: [https://${nodes.nosqldb.master.id}-${env.domain}](https://${nodes.nosqldb.master.id}-${env.domain})  
   Admin name: admin  
   Password: ${globals.redisPswd}
