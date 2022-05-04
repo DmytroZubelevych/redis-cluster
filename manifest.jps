@@ -95,6 +95,7 @@ actions:
       user: root
       sayYes: no
     - rebalanceCluster
+    - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
 
   getRedisPasswd:
     - cmd[${nodes.nosqldb.master.id}]: cat /etc/redis.conf |grep ^requirepass|awk '{print $2}'
@@ -172,7 +173,7 @@ actions:
       user: root
       
   setClusterAnnounceIp:
-    - cmd[nosqldb]:
+    - cmd[${this.id}]:
         sed -i '/^cluster-announce-ip/d' /etc/redis.conf;
         echo "cluster-announce-ip $(ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1)" >> /etc/redis.conf;
         jem service restart;
