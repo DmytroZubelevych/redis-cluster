@@ -89,6 +89,9 @@ onAfterAttachExtIp[nosqldb]:
   
 onBeforeDetachExtIp[nosqldb]:
   - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
+ 
+onAfterSetExtIpCount[nosqldb]:
+  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
 
 actions:
   autoscaling:
