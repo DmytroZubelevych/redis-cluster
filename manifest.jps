@@ -147,7 +147,7 @@ actions:
 
   saveCurrentIpAddress:
     - cmd[nosqldb]:
-        ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | tail -n 1 > /root/.previous_ip
+        ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1 > /root/.previous_ip
       user: root
 
   updateIpAddresses:
