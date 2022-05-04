@@ -180,7 +180,7 @@ actions:
       user: root
       
   setClusterAnnounceIp:
-    - cmd[${this.id}]:
+    - cmd[${this}]:
         sed -i '/^cluster-announce-ip/d' /etc/redis.conf;
         echo "cluster-announce-ip $(ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1)" >> /etc/redis.conf;
         jem service restart;
