@@ -15,7 +15,7 @@ if (hasCollaboration) {
     if (q.result != 0) return resp;
 }
 
-nMaxSameNodes = Math.min(q.array[0].value, q.array[1].value);
+nMaxSameNodes = Math.min(q[0].value, q[1].value);
 
 for (var i = 0, n = q.length; i < n; i++) {
   name = q[i].quota.name;
