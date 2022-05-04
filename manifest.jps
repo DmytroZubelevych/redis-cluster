@@ -79,6 +79,12 @@ onAfterMigrate:
   
 onAfterClone:
   - updateIpAddresses
+  
+onAfterAttachExtIp[nosqldb]:
+  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
+  
+onBeforeDetachExtIp[nosqldb]:
+  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
 
 actions:
   autoscaling:
