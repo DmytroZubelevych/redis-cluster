@@ -2,7 +2,7 @@
 var envName = "${env.envName}",
     SAME_NODES = "environment.maxsamenodescount",
     MAX_NODES = "environment.maxnodescount",
-    nMaxSameNodes;
+    nMaxSameNodes = 16;
 
 var hasCollaboration = (parseInt('${fn.compareEngine(7.0)}', 10) >= 0),
     q = [];
@@ -19,7 +19,7 @@ for (var i = 0, n = q.length; i < n; i++) {
   name = q[i].quota.name;
   value = q[i].value;
 
-  if (max >= value) {
+  if (nMaxSameNodes >= value) {
     if (name == MAX_NODES) nMaxSameNodes = value ? value - 1 : 1;
       else if (name == SAME_NODES) nMaxSameNodes = value;
   }
