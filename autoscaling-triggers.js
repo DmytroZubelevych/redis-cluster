@@ -12,8 +12,10 @@ if (hasCollaboration) {
     q = [ q[SAME_NODES], q[MAX_NODES] ];
 } else {
     q = jelastic.billing.account.GetQuotas(MAX_NODES + ";" + SAME_NODES ).array || [];
-    if (resp.result != 0) return resp;
+    if (q.result != 0) return resp;
 }
+
+nMaxSameNodes = Math.min(q.array[0].value, q.array[1].value);
 
 for (var i = 0, n = q.length; i < n; i++) {
   name = q[i].quota.name;
