@@ -85,13 +85,13 @@ onAfterClone:
   - updateIpAddresses
   
 onAfterAttachExtIp[nosqldb]:
-  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
+  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   
 onBeforeDetachExtIp[nosqldb]:
-  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
+  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
  
 onAfterSetExtIpCount[nosqldb]:
-  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
+  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
 
 actions:
   autoscaling:
