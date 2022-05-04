@@ -24,6 +24,9 @@ settings:
     - name: autoscaling
       type: checkbox
       caption: Enable Horizontal Auto-Scaling
+    - name: externalIpAddresses
+      type: checkbox
+      caption: Enable External IP Addresses for cluster nodes
 
 nodes:
   - cloudlets: 10
@@ -31,6 +34,7 @@ nodes:
     nodeType: redis
     skipNodeEmails: true
     diskLimit: 50
+    extip: ${settings.externalIpAddresses}
 
 onInstall:
   - if (${settings.autoscaling}): autoscaling
@@ -175,7 +179,7 @@ actions:
       user: root
       
   getNodeIpAddress:
-    - cmd[${this.id}]:
+    - cmd[${this}]:
         ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1;
       user: root
       
