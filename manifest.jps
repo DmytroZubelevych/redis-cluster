@@ -182,6 +182,6 @@ actions:
 success: |
   Below you will find your admin panel link, username and password.
   
-  Admin panel URL: [https://${nodes.nosqldb.master.id}-${env.domain}](https://${nodes.nosqldb.master.id}-${env.domain})  
+  Admin panel URL: [http://${nodes.nosqldb.master.id}-${env.domain}](http://${nodes.nosqldb.master.id}-${env.domain})  
   Admin name: admin  
   Password: ${globals.redisPswd}
