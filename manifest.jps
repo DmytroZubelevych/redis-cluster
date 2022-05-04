@@ -39,6 +39,7 @@ onInstall:
 onAfterServiceScaleOut[nosqldb]:
   - getRedisPasswd
   - addNewNodeToCluster
+  - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
   
 onBeforeRedeployContainer[nosqldb]:  
   - getRedisPasswd
