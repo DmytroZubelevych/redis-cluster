@@ -1,9 +1,30 @@
 //@req(nodeGroup, upLimit, downLimit)
-var envName = "${env.envName}";
+var envName = "${env.envName}",
+    SAME_NODES = "environment.maxsamenodescount",
+    MAX_NODES = "environment.maxnodescount",
+    nMaxSameNodes;
 
-var resp = jelastic.billing.account.GetQuotas('environment.maxsamenodescount');
-if (resp.result != 0) return resp;
-nMaxSameNodes = resp.array[0] && resp.array[0].value ? resp.array[0].value : 1000;
+var hasCollaboration = (parseInt('${fn.compareEngine(7.0)}', 10) >= 0),
+    q = [];
+
+if (hasCollaboration) {
+    q = JSON.parse('${quota.data}');
+    q = [ q[SAME_NODES], q[MAX_NODES] ];
+} else {
+    q = jelastic.billing.account.GetQuotas(MAX_NODES + ";" + SAME_NODES ).array || [];
+    if (resp.result != 0) return resp;
+}
+
+for (var i = 0, n = q.length; i < n; i++) {
+  name = q[i].quota.name;
+  value = q[i].value;
+
+  if (max >= value) {
+    if (name == MAX_NODES) nMaxSameNodes = value ? value - 1 : 1;
+      else if (name == SAME_NODES) nMaxSameNodes = value;
+  }
+}
+
 
 if (nMaxSameNodes < upLimit) upLimit = nMaxSameNodes;
 if (upLimit <= downLimit) return {result:0, warning: 'autoscaling triggers have not been added due to upLimit ['+upLimit+'] <= downLimit ['+downLimit+']'}
