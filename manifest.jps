@@ -120,7 +120,7 @@ actions:
     - cmd[${this}]:
         sed -i 's/^loglevel notice/loglevel warning/' /etc/redis.conf;
         jem passwd set -p ${globals.redisPswd};
-        echo -e "cluster-enabled yes\ncluster-config-file nodes.conf\ncluster-node-timeout 5000\nappendonly yes" >> /etc/redis.conf;
+        echo -e "cluster-enabled yes\ncluster-config-file nodes.conf\ncluster-node-timeout 5000\nappendonly yes\nmasterauth ${globals.redisPswd}" >> /etc/redis.conf;
         jem service restart;
       user: root
       
