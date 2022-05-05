@@ -29,7 +29,7 @@ for (var i = 0, n = q.length; i < n; i++) {
 
 
 if (nMaxSameNodes < upLimit) upLimit = nMaxSameNodes;
-if (upLimit <= downLimit) return {result:0, warning: 'autoscaling triggers have not been added due to upLimit ['+upLimit+'] <= downLimit ['+downLimit+']'}
+if (upLimit <= downLimit) return {result:0, warning: 'autoscaling triggers have not been added due to upLimit ['+upLimit+'] <= downLimit ['+downLimit+']'};
 
 var types = [{
     resourceType: "MEM",
