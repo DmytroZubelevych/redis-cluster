@@ -79,7 +79,7 @@ onBeforeClone:
   - saveCurrentIpAddress
 
 onAfterMigrate:
-  - updateIpAddresses
+  - setMasterAuth: ${nodes.nosqldb.join(id,)}
   
 onAfterClone:
   - updateIpAddresses
