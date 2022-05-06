@@ -79,9 +79,11 @@ onBeforeClone:
   - saveCurrentIpAddress
 
 onAfterMigrate:
-  - setMasterAuth: ${nodes.nosqldb.join(id,)}
+  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
+  - updateIpAddresses
   
 onAfterClone:
+  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   - updateIpAddresses
   
 onAfterAttachExtIp[nosqldb]:
