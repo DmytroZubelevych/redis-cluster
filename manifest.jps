@@ -103,7 +103,7 @@ onAfterResetServicePassword[nosqldb]:
 
 actions:
   autoscaling:
-    script: https://raw.githubusercontent.com/DmytroZubelevych/redis-cluster/main/autoscaling-triggers.js
+    script: ${baseUrl}/autoscaling-triggers.js?_r=${fn.random}
     params:
       nodeGroup: nosqldb
       upLimit: '12'
