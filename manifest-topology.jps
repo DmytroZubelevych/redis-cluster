@@ -43,6 +43,8 @@ onInstall:
     jps: "${settings.logic_jps}"
     envName: "${env.envName}"
     nodeGroup: nosqldb
+    globals:
+      redisPswd: ${globals.redisPswd}
     settings:
       autoscaling: ${settings.autoscaling}
 
