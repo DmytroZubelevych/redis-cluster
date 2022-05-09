@@ -3,6 +3,9 @@ jpsVersion: 1.8.1
 name: Redis cluster logic
 decription: Redis cluster autoscaling logic
 
+nodeGroupAlias:
+  ${settings.nodeGroup}: nosqldb
+
 onInstall:
   - clusterInit
     
@@ -66,6 +69,14 @@ onAfterResetNodePassword[nosqldb]:
 onAfterResetServicePassword[nosqldb]:
   - getRedisPasswd
   - setMasterAuth: ${nodes.nosqldb.join(id,)}
+  
+onAfterClone:
+  - script: delete MANIFEST.id; return {result:0, jps:MANIFEST};
+  - install: ${response.jps}
+    envName: ${event.response.env.envName}
+    settings:
+      nodeGroup: ${settings.nodeGroup} 
+      clone: true
 
 actions:
   clusterInit:
@@ -146,11 +157,6 @@ actions:
     - cmd[${nodes.nosqldb.master.id}]:
         export REDISCLI_AUTH=$(cat /etc/redis.conf |grep '^requirepass'|awk '{print $2}');
         redis-cli --cluster rebalance ${nodes.nosqldb.master.address}:6379;
-      user: root
-      
-  getNodeIpAddress:
-    - cmd[${this}]:
-        ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1;
       user: root
       
   setClusterAnnounceIp:
