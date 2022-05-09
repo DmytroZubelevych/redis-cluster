@@ -39,6 +39,7 @@ nodes:
     extip: ${settings.externalIpAddresses}
 
 onInstall:
+  - if (${settings.autoscaling}): autoscaling
   - cmd[nosqldb]: jem passwd set -p ${globals.redisPswd}
     user: root
   - install:
@@ -47,6 +48,14 @@ onInstall:
       nodeGroup: nosqldb
       settings:
         autoscaling: ${settings.autoscaling}
+        
+actions:
+  autoscaling:
+    script: ${baseUrl}/autoscaling-triggers.js?_r=${fn.random}
+    params:
+      nodeGroup: nosqldb
+      upLimit: '12'
+      downLimit: "${settings.nodesCount}"
 
 success: |
   Below you will find your admin panel link, username and password.
