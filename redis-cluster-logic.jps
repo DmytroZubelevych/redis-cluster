@@ -49,10 +49,6 @@ onAfterMigrate:
   - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   - updateIpAddresses
   
-onAfterClone:
-  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
-  - updateIpAddresses
-  
 onAfterAttachExtIp[nosqldb]:
   - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   
