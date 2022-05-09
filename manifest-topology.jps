@@ -12,7 +12,6 @@ baseUrl: https://raw.githubusercontent.com/DmytroZubelevych/redis-cluster/main
 permanent: true
 
 globals:
-  logic_jps: ${baseUrl}/redis-cluster-logic.jps?_r=${fn.random}
   redisPswd: ${fn.password}
 
 settings:
@@ -43,7 +42,7 @@ onInstall:
   - cmd[nosqldb]: jem passwd set -p ${globals.redisPswd}
     user: root
   - install:
-      jps: "${settings.logic_jps}"
+      jps: "${baseUrl}/redis-cluster-logic.jps?_r=${fn.random}"
       envName: "${env.envName}"
       nodeGroup: nosqldb
       settings:
