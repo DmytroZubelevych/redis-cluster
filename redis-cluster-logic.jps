@@ -94,7 +94,7 @@ actions:
     - cmd[${this}]:
         sed -i 's/^loglevel notice/loglevel warning/' /etc/redis.conf;
         jem passwd set -p ${response.out};
-        echo -e "cluster-enabled yes\ncluster-config-file nodes.conf\ncluster-node-timeout 5000\nappendonly yes\nmasterauth ${globals.redisPswd}" >> /etc/redis.conf;
+        echo -e "cluster-enabled yes\ncluster-config-file nodes.conf\ncluster-node-timeout 5000\nappendonly yes\nmasterauth ${response.out}" >> /etc/redis.conf;
         jem service restart;
       user: root
       
@@ -169,8 +169,9 @@ actions:
       user: root
       
   setMasterAuth:
+    - getRedisPasswd
     - cmd[${this}]:
         sed -i '/^masterauth/d' /etc/redis.conf;
-        echo "masterauth ${globals.redisPswd}" >> /etc/redis.conf;
+        echo "masterauth ${response.out}" >> /etc/redis.conf;
         jem service restart;
       user: root
