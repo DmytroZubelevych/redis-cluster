@@ -73,7 +73,7 @@ onAfterClone:
 
 actions:
   clusterInit:
-    - if (!${settings.clone:false})
+    - if (!${settings.clone:false}):
       - prepareClusterNode: ${nodes.nosqldb.join(id,)}
       - cmd[${nodes.nosqldb.master.id}]: |-
           export REDISCLI_AUTH=$(cat /etc/redis.conf |grep '^requirepass'|awk '{print $2}');
@@ -82,8 +82,7 @@ actions:
         sayYes: no
       - rebalanceCluster
     - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
-    - if (${settings.clone:false})
-      - updateIpAddresses
+    - if (${settings.clone:false}): updateIpAddresses
 
   getRedisPasswd:
     - cmd[${nodes.nosqldb.master.id}]: cat /etc/redis.conf |grep ^requirepass|awk '{print $2}'
