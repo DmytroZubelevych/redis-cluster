@@ -3,9 +3,6 @@ jpsVersion: 1.8.1
 name: Redis cluster logic
 decription: Redis cluster autoscaling logic
 
-nodeGroupAlias:
-  ${settings.nodeGroup}: nosqldb
-
 onInstall:
   - clusterInit
     
@@ -71,19 +68,22 @@ onAfterClone:
   - install: ${response.jps}
     envName: ${event.response.env.envName}
     settings:
-      nodeGroup: ${settings.nodeGroup} 
+      nodeGroup: nosqldb
       clone: true
 
 actions:
   clusterInit:
-    - prepareClusterNode: ${nodes.nosqldb.join(id,)}
-    - cmd[${nodes.nosqldb.master.id}]: |-
-        export REDISCLI_AUTH=$(cat /etc/redis.conf |grep '^requirepass'|awk '{print $2}');
-        yes yes| redis-cli --cluster create $(echo ${nodes.nosqldb.join(address,)} | sed 's/,/:6379 /g'):6379 --cluster-replicas 1
-      user: root
-      sayYes: no
-    - rebalanceCluster
+    - if (!${settings.clone:false})
+      - prepareClusterNode: ${nodes.nosqldb.join(id,)}
+      - cmd[${nodes.nosqldb.master.id}]: |-
+          export REDISCLI_AUTH=$(cat /etc/redis.conf |grep '^requirepass'|awk '{print $2}');
+          yes yes| redis-cli --cluster create $(echo ${nodes.nosqldb.join(address,)} | sed 's/,/:6379 /g'):6379 --cluster-replicas 1
+        user: root
+        sayYes: no
+      - rebalanceCluster
     - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
+    - if (${settings.clone:false})
+      - updateIpAddresses
 
   getRedisPasswd:
     - cmd[${nodes.nosqldb.master.id}]: cat /etc/redis.conf |grep ^requirepass|awk '{print $2}'
