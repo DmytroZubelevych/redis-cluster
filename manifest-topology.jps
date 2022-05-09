@@ -43,6 +43,8 @@ onInstall:
     jps: "${settings.logic_jps}"
     envName: "${env.envName}"
     nodeGroup: nosqldb
+    settings:
+      autoscaling: ${settings.autoscaling}
 
 success: |
   Below you will find your admin panel link, username and password.
