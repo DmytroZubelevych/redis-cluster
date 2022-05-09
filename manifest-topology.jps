@@ -39,14 +39,14 @@ nodes:
     extip: ${settings.externalIpAddresses}
 
 onInstall:
-  install:
-    jps: "${settings.logic_jps}"
-    envName: "${env.envName}"
-    nodeGroup: nosqldb
-    globals:
-      redisPswd: ${globals.redisPswd}
-    settings:
-      autoscaling: ${settings.autoscaling}
+  - cmd[nosqldb]: jem passwd set -p ${globals.redisPswd}
+    user: root
+  - install:
+      jps: "${settings.logic_jps}"
+      envName: "${env.envName}"
+      nodeGroup: nosqldb
+      settings:
+        autoscaling: ${settings.autoscaling}
 
 success: |
   Below you will find your admin panel link, username and password.
