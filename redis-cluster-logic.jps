@@ -4,7 +4,6 @@ name: Redis cluster logic
 decription: Redis cluster autoscaling logic
 
 onInstall:
-  - if (${settings.autoscaling}): autoscaling
   - clusterInit
     
 onAfterServiceScaleOut[nosqldb]:
@@ -69,13 +68,6 @@ onAfterResetServicePassword[nosqldb]:
   - setMasterAuth: ${nodes.nosqldb.join(id,)}
 
 actions:
-  autoscaling:
-    script: ${baseUrl}/autoscaling-triggers.js?_r=${fn.random}
-    params:
-      nodeGroup: nosqldb
-      upLimit: '12'
-      downLimit: "${settings.nodesCount}"
-
   clusterInit:
     - prepareClusterNode: ${nodes.nosqldb.join(id,)}
     - cmd[${nodes.nosqldb.master.id}]: |-
