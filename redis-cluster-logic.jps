@@ -11,18 +11,18 @@ onAfterServiceScaleOut[nosqldb]:
   - addNewNodeToCluster
   - setClusterAnnounceIp: ${event.response.nodes.join(id,)}
   
-onBeforeRedeployContainer[nosqldb]:  
-  - if (${event.response.nodes.length} != ${nodes.nosqldb.length}):
-    - forEach(event.response.nodes):
-      - reshardBeforeScaleIn:
-          address: ${@i.address}
+#onBeforeRedeployContainer[nosqldb]:  
+#  - if (${event.response.nodes.length} != ${nodes.nosqldb.length}):
+#    - forEach(event.response.nodes):
+#      - reshardBeforeScaleIn:
+#          address: ${@i.address}
   
-onAfterRedeployContainer[nosqldb]:
-  - if (${event.response.nodes.length} == ${nodes.nosqldb.length}):
-    - clusterInit
-  - else:
-    - forEach(event.response.nodes):
-      - addNewNodeToCluster
+#onAfterRedeployContainer[nosqldb]:
+#  - if (${event.response.nodes.length} == ${nodes.nosqldb.length}):
+#    - clusterInit
+#  - else:
+#    - forEach(event.response.nodes):
+#      - addNewNodeToCluster
 
 onBeforeScaleIn[nosqldb]:
   - forEach(event.response.nodes):
