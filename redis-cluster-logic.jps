@@ -82,7 +82,7 @@ actions:
         sayYes: no
       - rebalanceCluster
       - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
-    - else
+    - else:
       - cmd[nosqldb]: jem service stop
       - forEach(nodes.nosqldb):
         - cmd[${@i.id}]:
