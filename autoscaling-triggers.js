@@ -114,4 +114,4 @@ for (var i = 0; i < types.length; i++) {
 
 return {
     result: 0
-}
+};
