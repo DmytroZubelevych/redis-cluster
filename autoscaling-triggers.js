@@ -1,3 +1,4 @@
+//@auth
 //@req(nodeGroup, upLimit, downLimit)
 var envName = "${env.envName}",
     SAME_NODES = "environment.maxsamenodescount",
