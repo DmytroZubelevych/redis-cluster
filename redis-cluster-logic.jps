@@ -74,13 +74,10 @@ actions:
       - forEach(nodes.nosqldb):
         - cmd[${@i.id}]:
             sed -i '/^cluster-announce-ip/d' /etc/redis.conf;
-            if ip a|grep -q eth0; then
-                INTERFACE="eth0"
-            else
-                INTERFACE="venet0"
-            fi
+            if ip a|grep -q eth0; then INTERFACE="eth0"; else INTERFACE="venet0"; fi;
             echo "cluster-announce-ip $(ip a | grep -A1 venet0 | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1)" >> /etc/redis.conf;
           user: root
+          sayYes: no
         - cmd[${@i.id}]: cat /root/.previous_ip
           user: root
         - cmd[nosqldb]: sed -i 's/${response.out}/${@i.address}/'  /var/lib/redis/nodes.conf 
@@ -137,13 +134,10 @@ actions:
 
   saveCurrentIpAddress:
     - cmd[nosqldb]:
-        if ip a|grep -q eth0; then
-            INTERFACE="eth0"
-        else
-            INTERFACE="venet0"
-        fi
+        if ip a|grep -q eth0; then INTERFACE="eth0"; else INTERFACE="venet0"; fi;
         ip a | grep -A1 ${INTERFACE} | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1 > /root/.previous_ip
       user: root
+      sayYes: no
 
   updateIpAddresses:
     - cmd[nosqldb]: jem service stop
@@ -165,14 +159,11 @@ actions:
   setClusterAnnounceIp:
     - cmd[${this}]:
         sed -i '/^cluster-announce-ip/d' /etc/redis.conf;
-        if ip a|grep -q eth0; then
-            INTERFACE="eth0"
-        else
-            INTERFACE="venet0"
-        fi
+        if ip a|grep -q eth0; then INTERFACE="eth0"; else INTERFACE="venet0"; fi;
         echo "cluster-announce-ip $(ip a | grep -A1 ${INTERFACE} | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1)" >> /etc/redis.conf;
         jem service restart;
       user: root
+      sayYes: no
       
   setMasterAuth:
     - getRedisPasswd
