@@ -13,7 +13,7 @@ if (hasCollaboration) {
     q = [ q[SAME_NODES], q[MAX_NODES] ];
 } else {
     q = jelastic.billing.account.GetQuotas(MAX_NODES + ";" + SAME_NODES ).array || [];
-    if (q.result != 0) return resp;
+    if (q.result != 0) return q;
 }
 
 nMaxSameNodes = Math.min(q[0].value, q[1].value);
