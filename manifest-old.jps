@@ -202,4 +202,4 @@ success: |
   
   Admin panel URL: [http://node${nodes.nosqldb.master.id}-${env.domain}](http://node${nodes.nosqldb.master.id}-${env.domain})  
   Admin name: admin  
-  Password: ${globals.redisPswd}
+  Password: ${globals.redisPswd}  
