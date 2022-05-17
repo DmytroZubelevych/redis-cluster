@@ -1,7 +1,6 @@
 //@auth
-//@req(nodeGroup, upLimit, downLimit)
-var envName = "${env.envName}",
-    SAME_NODES = "environment.maxsamenodescount",
+//@req(envName, nodeGroup, upLimit, downLimit)
+var SAME_NODES = "environment.maxsamenodescount",
     MAX_NODES = "environment.maxnodescount",
     nMaxSameNodes = 16;
 
@@ -26,7 +25,6 @@ for (var i = 0, n = q.length; i < n; i++) {
       else if (name == SAME_NODES) nMaxSameNodes = value;
   }
 }
-
 
 if (nMaxSameNodes < upLimit) upLimit = nMaxSameNodes;
 if (upLimit <= downLimit) return {result:0, warning: 'autoscaling triggers have not been added due to upLimit ['+upLimit+'] <= downLimit ['+downLimit+']'};
