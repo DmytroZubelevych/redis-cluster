@@ -55,6 +55,7 @@ actions:
       nodeGroup: nosqldb
       upLimit: '12'
       downLimit: "${settings.nodesCount}"
+      envName: "${env.envName}"
 
 success: |
   Below you will find your admin panel link, username and password.
