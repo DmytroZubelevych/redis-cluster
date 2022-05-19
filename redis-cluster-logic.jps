@@ -158,10 +158,11 @@ actions:
       
   setClusterAnnounceIp:
     - cmd[${this}]:
+        jem service stop;
         sed -i '/^cluster-announce-ip/d' /etc/redis.conf;
         if ip a|grep -q eth0; then INTERFACE="eth0"; else INTERFACE="venet0"; fi;
         echo "cluster-announce-ip $(ip a | grep -A1 ${INTERFACE} | grep inet | awk '{print $2}'| sed 's/\/[0-9]*//g' | head -n 2|tail -n 1)" >> /etc/redis.conf;
-        jem service restart;
+        jem service start;
       user: root
       sayYes: no
       
