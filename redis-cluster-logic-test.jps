@@ -158,7 +158,7 @@ actions:
           user: root
         - cmd[nosqldb]: sed -i 's/${response.out}/${@i.address}/'  /var/lib/redis/nodes.conf 
           user: root
-    - cmd[nosqldb]: jem service restart
+    - cmd[nosqldb]: jem service start
     - cmd[nosqldb]: rm -f /root/.previous_ip
       user: root
     
