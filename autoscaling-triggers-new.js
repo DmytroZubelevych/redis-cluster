@@ -109,7 +109,7 @@ for (var i = 0; i < types.length; i++) {
         if (resp.result != 0) return resp;
         resp = jelastic.env.trigger.AddAutoScalingTrigger(envName, session, scaleDownTriggerData);
         if (resp.result != 0) return resp;
-    else {
+    } else {
         resp = jelastic.env.trigger.AddTrigger(envName, session, scaleUpTriggerData);
         if (resp.result != 0) return resp;
         resp = jelastic.env.trigger.AddTrigger(envName, session, scaleDownTriggerData);
