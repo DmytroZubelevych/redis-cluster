@@ -61,8 +61,8 @@ if (cleanOldTriggers) {
 
 for (var i = 0; i < types.length; i++) {
     t = types[i];
-
-    resp = jelastic.env.trigger.AddTrigger(envName, session, {
+    
+    var scaleUpTriggerData = {
         name: "scale-up",
         isEnabled: true,
         nodeGroup: nodeGroup,
@@ -81,11 +81,9 @@ for (var i = 0; i < types.length; i++) {
                 notify: true
             }
         }]
-    });
-
-    if (resp.result != 0) return resp;
-
-    resp = jelastic.env.trigger.AddTrigger(envName, session, {
+    };
+    
+    var scaleDownTriggerData = {
         isEnabled: true,
         name: "scale-down",
         nodeGroup: nodeGroup,
@@ -104,8 +102,19 @@ for (var i = 0; i < types.length; i++) {
                 notify: true
             }
         }]
-    });
-    if (resp.result != 0) return resp;
+    };
+    
+    if (hasCollaboration) {
+        resp = jelastic.env.trigger.AddAutoScalingTrigger(envName, session, scaleUpTriggerData);
+        if (resp.result != 0) return resp;
+        resp = jelastic.env.trigger.AddAutoScalingTrigger(envName, session, scaleDownTriggerData);
+        if (resp.result != 0) return resp;
+    } else {
+        resp = jelastic.env.trigger.AddTrigger(envName, session, scaleUpTriggerData);
+        if (resp.result != 0) return resp;
+        resp = jelastic.env.trigger.AddTrigger(envName, session, scaleDownTriggerData);
+        if (resp.result != 0) return resp;
+    }
 }
 
 
