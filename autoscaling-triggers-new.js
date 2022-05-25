@@ -103,13 +103,18 @@ for (var i = 0; i < types.length; i++) {
             }
         }]
     };
-
-    resp = jelastic.env.trigger.AddTrigger(envName, session, scaleUpTriggerData);
-
-    if (resp.result != 0) return resp;
-
-    resp = jelastic.env.trigger.AddTrigger(envName, session, scaleDownTriggerData);
-    if (resp.result != 0) return resp;
+    
+    if (hasCollaboration) {
+        resp = jelastic.env.trigger.AddAutoScalingTrigger(envName, session, scaleUpTriggerData);
+        if (resp.result != 0) return resp;
+        resp = jelastic.env.trigger.AddAutoScalingTrigger(envName, session, scaleDownTriggerData);
+        if (resp.result != 0) return resp;
+    else {
+        resp = jelastic.env.trigger.AddTrigger(envName, session, scaleUpTriggerData);
+        if (resp.result != 0) return resp;
+        resp = jelastic.env.trigger.AddTrigger(envName, session, scaleDownTriggerData);
+        if (resp.result != 0) return resp;
+    }
 }
 
 
