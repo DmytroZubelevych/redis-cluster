@@ -2,8 +2,16 @@
 
 <img align="left" width="80" src="images/redis-cluster.png">
 
-A Redis cluster is often used as a tool for data storage, caching, message brokering, and other tasks. It became rich thanks to the ability to scale and high speed. With this solution you can provision a three-server cluster for data sharding, high availability and high performance due to replication to the Secondary nodes. In this list, if the Primary fails, the Secondary server automatically replaces it.
+A Redis cluster is often used as a tool for data storage, caching, message brokering, and other tasks. It became rich thanks to the ability to scale and high speed. With this solution you can provision a three-server cluster for data sharding, high availability and high performance due to replication to the Secondary nodes. If the Primary fails, the Secondary server automatically replaces it.
+
+## Redis Cluster Topology
+
+Default cluster topology looks as follows. 
+<p align="left"> 
+<img src="images/topology.png" width="300">
+</p>
   
+Cluster can be scaled out/in either automatically or manually. Each scaling operation is performed by pair of nodes - one Primary and one Secondary.
 &nbsp;   
 &nbsp;  
 ## Redis Cluster Deployment to the Cloud
@@ -12,7 +20,6 @@ Get your Virtuozzo account at any of available [hosting provider](https://www.vi
 
 Import the  [package manifest raw link](https://raw.githubusercontent.com/jelastic-jps/https://github.com/jelastic-jps/redis-cluster/blob/main/manifest.jps) or find Redis Cluster application in the [Marketplace](https://www.virtuozzo.com/application-platform-docs/marketplace/) within the [dashboard](https://www.virtuozzo.com/application-platform-docs/dashboard-guide).  
 
-  
 ## Installation Process
 
 In the opened confirmation window at Platform dashboard, if required change:  
