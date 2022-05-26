@@ -39,7 +39,7 @@ In the opened confirmation window at Platform dashboard, if required change:
 and click on __Install__.
 
 <p align="left"> 
-<img src="images/install.png" width="500">
+<img src="images/install.png" width="600">
 </p>
 
 Once the deployment is finished, you’ll see an appropriate success pop-up.
