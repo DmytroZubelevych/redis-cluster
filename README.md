@@ -28,7 +28,7 @@ In the opened confirmation window at Platform dashboard, if required change:
 
 * __Enable Horizontal Auto-Scaling__ - cluster will be automaticaly scaled horizontaly depending on specified [scaling triggers](https://www.virtuozzo.com/application-platform-docs/automatic-horizontal-scaling/#triggers-for-automatic-scaling)
 
-* __Enable External IP Addresses for cluster nodes__ - with this option cluster will be configured to work via public IPs only. Make sure that your quotas are enough to assing 6 public IP addressed for your cluster
+* __Enable External IP Addresses for cluster nodes__ - with this option cluster will be configured to work via public IPs only. Make sure that your quotas are enough to assing 6 public IP addresses at least for your cluster  
 
 * __Environment__ name  
 
