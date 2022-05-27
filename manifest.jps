@@ -5,8 +5,6 @@ decription: High performance and highly available scalable Redis cluster with ho
 id: redis-cluster
 targetEditions: any
 logo: https://github.com/jelastic/icons/raw/master/redis/jelastic/icons/logo_32x32.png
-description: |
-  Redis active-active cluster
 baseUrl: https://raw.githubusercontent.com/DmytroZubelevych/redis-cluster/main
 
 permanent: true
