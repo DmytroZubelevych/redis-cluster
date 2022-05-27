@@ -1,7 +1,7 @@
 type: install
 jpsVersion: 1.8.1
 name: Redis cluster
-decription: Redis cluster topology
+decription: High performance and highly available scalable Redis cluster with horizontal data sharding. Each Primary node is complemented with Secondary one to ensure reads load distribution and autorecovery if the Primary goes down.
 id: redis-cluster
 targetEditions: any
 logo: https://github.com/jelastic/icons/raw/master/redis/jelastic/icons/logo_32x32.png
