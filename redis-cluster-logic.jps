@@ -33,14 +33,14 @@ onAfterMigrate:
   - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   - updateIpAddresses
   
-onAfterAttachExtIp[nosqldb]:
-  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
+#onAfterAttachExtIp[nosqldb]:
+#  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   
-onBeforeDetachExtIp[nosqldb]:
-  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
+#onBeforeDetachExtIp[nosqldb]:
+#  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
  
-onAfterSetExtIpCount[nosqldb]:
-  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
+#onAfterSetExtIpCount[nosqldb]:
+#  - setClusterAnnounceIp: ${nodes.nosqldb.join(id,)}
   
 onAfterResetNodePassword[nosqldb]:
   - getRedisPasswd
